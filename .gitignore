@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vercel/
+.env
+# NOTE: backend/ocr_cache.sqlite3 is intentionally NOT ignored - it must be deployed.
