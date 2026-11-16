@@ -575,30 +575,22 @@ body[data-mode="enhanced"] .abbrev-term { color: var(--teal-dark); }
   .results-grid { grid-template-columns: 1fr; }
   .card { padding: 16px; }
   .results-card { overflow: hidden; }
+  .results-col {
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .terms-table {
     display: table;
-    width: 100%;
-    table-layout: fixed;
+    width: max-content;
+    min-width: 720px;
+    table-layout: auto;
     font-size: 12px;
   }
   .terms-table th,
   .terms-table td {
-    padding: 7px 5px;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-  .terms-table th:nth-child(1),
-  .terms-table td:nth-child(1) { width: 28%; }
-  .terms-table th:nth-child(2),
-  .terms-table td:nth-child(2) { width: 27%; }
-  .terms-table th:nth-child(3),
-  .terms-table td:nth-child(3) { width: 45%; }
-  .terms-table .dropped-separator td,
-  .terms-table .instruction-separator td {
-    width: auto;
-    padding-left: 8px;
-    padding-right: 8px;
+    padding: 7px 10px;
+    white-space: nowrap;
   }
   .results-header-actions { width: 100%; }
   .results-header-actions .btn-inline { flex: 1; }
