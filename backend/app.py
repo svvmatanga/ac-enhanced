@@ -157,9 +157,23 @@ def assign_instructions(matches, text):
                 transition_end = min(len(text), max(raw_start, m["end"]))
                 transition_text = text[raw_drug_end:transition_end]
                 completed_quantity = bool(re.search(r"(?:^|\s)#\s*\d", between_drugs))
-                in_parentheses = (
+                parenthesis_prefix = between_drugs.rstrip()
+                if parenthesis_prefix.endswith("("):
+                    parenthesis_prefix = parenthesis_prefix[:-1].rstrip()
+                parenthesized_alias = (
                     text[:raw_start].rstrip().endswith("(")
-                    or "(" in transition_text
+                    and (
+                        not parenthesis_prefix
+                        or bool(re.search(
+                            r"(?:#\s*\d+|\d+(?:\.\d+)?\s*"
+                            r"(?:MG|MCG|UG|ML|G|TAB|TABS|CAP|CAPS))\s*$",
+                            parenthesis_prefix,
+                            re.IGNORECASE,
+                        ))
+                    )
+                )
+                in_parentheses = parenthesized_alias or (
+                    "(" in transition_text and not completed_quantity
                 )
                 is_alternative = bool(re.search(r"\bor\b", between_drugs, re.IGNORECASE))
                 is_combination = "+" in between_drugs or "+" in transition_text
