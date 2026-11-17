@@ -278,14 +278,19 @@ def ocr():
     cached = raw_text is not None
     if not cached:
         try:
-            from ocr.trocr_engine import extract_text
+            # On Vercel (OCR_SPACE_API_KEY set) use the hosted OCR service.
+            # Locally, without a key, fall back to the TrOCR engine.
+            from ocr.cloud_ocr import cloud_ocr_available
+            if cloud_ocr_available():
+                from ocr.cloud_ocr import extract_text
+            else:
+                from ocr.trocr_engine import extract_text
             raw_text = extract_text(image_bytes)
         except Exception as exc:  # noqa: BLE001
             return jsonify({
-                "error": "OCR failed. Make sure TrOCR dependencies (torch, "
-                         "transformers, opencv-python, pillow) are installed and "
-                         "that the model has been downloaded at least once "
-                         "(requires internet access).",
+                "error": "OCR failed. On Vercel, set the OCR_SPACE_API_KEY "
+                         "environment variable. When running locally without "
+                         "it, TrOCR needs torch, transformers and opencv-python.",
                 "detail": str(exc),
             }), 500
         ocr_cache.put(image_bytes, raw_text)
