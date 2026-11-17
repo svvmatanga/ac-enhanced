@@ -425,6 +425,13 @@ class EnhancedAhoCorasick:
         # Match remaining misspelled single tokens.
         fuzzy_token_cache = {}
         for idx, (tok, (tstart, tend)) in enumerate(zip(tokens, token_spans)):
+            # Strip stray OCR punctuation at the token edges (e.g. "PARACETAMO/")
+            # so the alphabetic fuzzy bucket is searched; spans are adjusted to match.
+            core = tok.strip(self._EDGE_PUNCT)
+            if core and core != tok:
+                tstart += len(tok) - len(tok.lstrip(self._EDGE_PUNCT))
+                tend = tstart + len(core)
+                tok = core
             tok_upper = tok.upper()
             if tok_upper in self.common_words:
                 continue
@@ -579,6 +586,8 @@ class EnhancedAhoCorasick:
         return T
 
     # Token and span helpers.
+    _EDGE_PUNCT = ".,;:()[]{}/\\-_\"'!?"
+
     @staticmethod
     def _tokenize(T):
         tokens, spans = [], []
