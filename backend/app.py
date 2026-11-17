@@ -160,7 +160,7 @@ def assign_instructions(matches, text):
                 in_parentheses = (
                     text[:raw_start].rstrip().endswith("(")
                     or "(" in transition_text
-                ) and not completed_quantity
+                )
                 is_alternative = bool(re.search(r"\bor\b", between_drugs, re.IGNORECASE))
                 is_combination = "+" in between_drugs or "+" in transition_text
                 generic_brand_alias = (
